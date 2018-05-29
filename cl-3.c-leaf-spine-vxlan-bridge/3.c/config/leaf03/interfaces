@@ -1,0 +1,67 @@
+#loopback interface
+auto lo
+iface lo inet loopback
+  address 23.0.0.13/32
+  alias loopback interface
+
+# Management interface
+auto eth0
+iface eth0 inet dhcp
+    alias management interface
+    vrf mgmt
+
+auto mgmt
+iface mgmt
+    address 127.0.0.1/8
+    vrf-table auto
+
+# Port to Server03
+auto swp1
+iface swp1
+  alias to Server03
+  # This is required for Vagrant only
+  post-up ip link set swp1 promisc on
+
+# Port to Spine01
+auto swp51
+iface swp51
+  mtu 9216
+  alias to Spine01
+
+# Port to Spine02
+auto swp52
+iface swp52
+  mtu 9216
+  alias to Spine02
+
+# Bond to Server03
+auto swp1
+iface swp1
+  mtu 9000
+  bridge-access 1013
+
+# Define the bridge for STP
+auto bridge
+iface bridge
+  bridge-vlan-aware yes
+  # bridge-ports includes all ports related to VxLAN and CLAG.
+  # does not include the Peerlink.4094 subinterface
+  bridge-ports swp1 vni1013 
+  bridge-vids 1013
+
+# VxLAN Tunnel for Server1-Server3 (Vlan 1013)
+auto vni1013
+iface vni1013
+  mtu 9000
+  vxlan-id 10013
+  vxlan-local-tunnelip 23.0.0.13
+  bridge-access 1013
+  bridge-learning off
+  mstpctl-bpduguard yes
+  mstpctl-portbpdufilter yes
+
+auto vlan1013
+iface vlan1013
+    vlan-id 1013
+    vlan-raw-device bridge
+
