@@ -1,0 +1,12 @@
+# networking
+interfaces:
+    leaf01:
+        loopback: "23.0.0.11"
+    leaf02:
+        loopback: "23.0.0.12"
+    leaf03:
+        loopback: "23.0.0.13"
+    spine01:
+        loopback: "23.0.0.21"
+    spine02:
+        loopback: "23.0.0.22"
