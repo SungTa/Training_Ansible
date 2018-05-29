@@ -1,0 +1,204 @@
+mttw-ubuntu@ubuntu:~$ vagrant up oob-mgmt-server
+mttw-ubuntu@ubuntu:~$ vagrant up oob-mgmt-switch spine01 spine02 leaf01 leaf02 leaf03 server01 server03
+mttw-ubuntu@ubuntu:~$ vagrant ssh oob-mgmt-server
+
+cumulus@oob-mgmt-server:~/ansible/CumulusLinux/5-Switch_Scenario-3_Leaf-Spine - AnySpeed/Ansible_Playbook$ ansible-playbook deploy_5-sw-leaf-spine.yml
+[DEPRECATION WARNING]: [defaults]hostfile option, The key is misleading as it can also be a list of hosts, a directory or a list of paths . This feature will be removed in version 2.8. Deprecation warnings can be disabled by setting
+deprecation_warnings=False in ansible.cfg.
+
+PLAY [network] ******************************************************************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] **********************************************************************************************************************************************************************************************************************
+ok: [leaf02]
+ok: [leaf03]
+ok: [spine01]
+ok: [spine02]
+ok: [leaf01]
+
+TASK [copy interfaces] **********************************************************************************************************************************************************************************************************************
+changed: [leaf02]
+changed: [leaf03]
+changed: [leaf01]
+changed: [spine01]
+changed: [spine02]
+
+TASK [copy frr daemons] *********************************************************************************************************************************************************************************************************************
+changed: [leaf01]
+changed: [leaf02]
+changed: [leaf03]
+changed: [spine01]
+changed: [spine02]
+
+TASK [copy frr conf] ************************************************************************************************************************************************************************************************************************
+changed: [leaf01]
+changed: [leaf02]
+changed: [leaf03]
+changed: [spine01]
+changed: [spine02]
+
+TASK [reload networking] ********************************************************************************************************************************************************************************************************************
+changed: [leaf03]
+changed: [spine01]
+changed: [spine02]
+changed: [leaf02]
+changed: [leaf01]
+
+TASK [reload frr] ***************************************************************************************************************************************************************************************************************************
+changed: [spine02]
+changed: [leaf03]
+changed: [leaf01]
+changed: [leaf02]
+changed: [spine01]
+
+PLAY [mlag-server] **************************************************************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] **********************************************************************************************************************************************************************************************************************
+ok: [server01]
+
+TASK [install ifenslave package] ************************************************************************************************************************************************************************************************************
+ok: [server01] => (item=[u'ifenslave'])
+
+TASK [Setup bonding module in Kernel] *******************************************************************************************************************************************************************************************************
+changed: [server01]
+
+TASK [copy interfaces] **********************************************************************************************************************************************************************************************************************
+changed: [server01]
+
+TASK [restarts servers with their new configuration] ****************************************************************************************************************************************************************************************
+changed: [server01]
+
+TASK [Wait for everything to come back up] **************************************************************************************************************************************************************************************************
+ok: [server01 -> localhost]
+
+PLAY [standalone-server] ********************************************************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] **********************************************************************************************************************************************************************************************************************
+ok: [server03]
+
+TASK [copy interfaces] **********************************************************************************************************************************************************************************************************************
+An exception occurred during task execution. To see the full traceback, use -vvv. The error was:        /home/cumulus/ansible/CumulusLinux/5-Switch_Scenario-3_Leaf-Spine - AnySpeed/Ansible_Playbook/inventory/server03/interfaces
+fatal: [server03]: FAILED! => {"changed": false, "failed": true, "msg": "Could not find or access 'inventory/server03/interfaces'\nSearched in:\n\t/home/cumulus/ansible/CumulusLinux/5-Switch_Scenario-3_Leaf-Spine - AnySpeed/Ansible_Playbook/files/inventory/server03/interfaces\n\t/home/cumulus/ansible/CumulusLinux/5-Switch_Scenario-3_Leaf-Spine - AnySpeed/Ansible_Playbook/inventory/server03/interfaces\n\t/home/cumulus/ansible/CumulusLinux/5-Switch_Scenario-3_Leaf-Spine - AnySpeed/Ansible_Playbook/files/inventory/server03/interfaces\n\t/home/cumulus/ansible/CumulusLinux/5-Switch_Scenario-3_Leaf-Spine - AnySpeed/Ansible_Playbook/inventory/server03/interfaces"}
+        to retry, use: --limit @/home/cumulus/ansible/CumulusLinux/5-Switch_Scenario-3_Leaf-Spine - AnySpeed/Ansible_Playbook/deploy_5-sw-leaf-spine.retry
+
+PLAY RECAP **********************************************************************************************************************************************************************************************************************************
+leaf01                     : ok=6    changed=5    unreachable=0    failed=0
+leaf02                     : ok=6    changed=5    unreachable=0    failed=0
+leaf03                     : ok=6    changed=5    unreachable=0    failed=0
+server01                   : ok=6    changed=3    unreachable=0    failed=0
+server03                   : ok=1    changed=0    unreachable=0    failed=1
+spine01                    : ok=6    changed=5    unreachable=0    failed=0
+spine02                    : ok=6    changed=5    unreachable=0    failed=0
+
+cumulus@oob-mgmt-server:~/ansible/CumulusLinux/5-Switch_Scenario-3_Leaf-Spine - AnySpeed/Ansible_Playbook$ ansible-playbook deploy_5-sw-leaf-spine.yml
+[DEPRECATION WARNING]: [defaults]hostfile option, The key is misleading as it can also be a list of hosts, a directory or a list of paths . This feature will be removed in version 2.8. Deprecation warnings can be disabled by setting
+deprecation_warnings=False in ansible.cfg.
+
+PLAY [network] ******************************************************************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] **********************************************************************************************************************************************************************************************************************
+ok: [spine01]
+ok: [spine02]
+ok: [leaf01]
+ok: [leaf03]
+ok: [leaf02]
+
+TASK [copy interfaces] **********************************************************************************************************************************************************************************************************************
+ok: [spine02]
+ok: [spine01]
+ok: [leaf02]
+ok: [leaf01]
+ok: [leaf03]
+
+TASK [copy frr daemons] *********************************************************************************************************************************************************************************************************************
+ok: [leaf01]
+ok: [leaf02]
+ok: [leaf03]
+ok: [spine01]
+ok: [spine02]
+
+TASK [copy frr conf] ************************************************************************************************************************************************************************************************************************
+ok: [leaf01]
+ok: [leaf02]
+ok: [leaf03]
+ok: [spine01]
+ok: [spine02]
+
+TASK [reload networking] ********************************************************************************************************************************************************************************************************************
+changed: [spine01]
+changed: [leaf03]
+changed: [spine02]
+changed: [leaf01]
+changed: [leaf02]
+
+TASK [reload frr] ***************************************************************************************************************************************************************************************************************************
+changed: [leaf03]
+changed: [spine02]
+changed: [leaf02]
+changed: [leaf01]
+changed: [spine01]
+
+PLAY [mlag-server] **************************************************************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] **********************************************************************************************************************************************************************************************************************
+ok: [server01]
+
+TASK [install ifenslave package] ************************************************************************************************************************************************************************************************************
+ok: [server01] => (item=[u'ifenslave'])
+
+TASK [Setup bonding module in Kernel] *******************************************************************************************************************************************************************************************************
+changed: [server01]
+
+TASK [copy interfaces] **********************************************************************************************************************************************************************************************************************
+ok: [server01]
+
+TASK [restarts servers with their new configuration] ****************************************************************************************************************************************************************************************
+changed: [server01]
+
+TASK [Wait for everything to come back up] **************************************************************************************************************************************************************************************************
+ok: [server01 -> localhost]
+
+PLAY [standalone-server] ********************************************************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] **********************************************************************************************************************************************************************************************************************
+ok: [server03]
+
+TASK [copy interfaces] **********************************************************************************************************************************************************************************************************************
+changed: [server03]
+
+TASK [restarts servers with their new configuration] ****************************************************************************************************************************************************************************************
+changed: [server03]
+
+TASK [Wait for everything to come back up] **************************************************************************************************************************************************************************************************
+ok: [server03 -> localhost]
+
+PLAY RECAP **********************************************************************************************************************************************************************************************************************************
+leaf01                     : ok=6    changed=2    unreachable=0    failed=0
+leaf02                     : ok=6    changed=2    unreachable=0    failed=0
+leaf03                     : ok=6    changed=2    unreachable=0    failed=0
+server01                   : ok=6    changed=2    unreachable=0    failed=0
+server03                   : ok=4    changed=2    unreachable=0    failed=0
+spine01                    : ok=6    changed=2    unreachable=0    failed=0
+spine02                    : ok=6    changed=2    unreachable=0    failed=0
+
+cumulus@oob-mgmt-server:~/ansible/CumulusLinux/5-Switch_Scenario-3_Leaf-Spine - AnySpeed/Ansible_Playbook$ ssh server01
+Welcome to Ubuntu 16.04 LTS (GNU/Linux 4.4.0-127-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+
+151 packages can be updated.
+2 updates are security updates.
+
+
+Last login: Sat May 26 10:43:13 2018 from 192.168.0.254
+cumulus@server01:~$ ping 172.16.2.101
+PING 172.16.2.101 (172.16.2.101) 56(84) bytes of data.
+64 bytes from 172.16.2.101: icmp_seq=1 ttl=61 time=4.51 ms
+64 bytes from 172.16.2.101: icmp_seq=2 ttl=61 time=2.98 ms
+64 bytes from 172.16.2.101: icmp_seq=3 ttl=61 time=3.02 ms
+64 bytes from 172.16.2.101: icmp_seq=4 ttl=61 time=2.88 ms
+^C
+--- 172.16.2.101 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3006ms
+rtt min/avg/max/mdev = 2.880/3.350/4.514/0.674 ms
+cumulus@server01:~$
+

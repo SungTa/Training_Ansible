@@ -1,0 +1,34 @@
+graph vx {
+ "leaf01" [function="leaf" os="CumulusCommunity/cumulus-vx" version="3.5.3" memory="768" config="./helper_scripts/config_switch.sh" ]
+ "leaf02" [function="leaf" os="CumulusCommunity/cumulus-vx" version="3.5.3" memory="768" config="./helper_scripts/config_switch.sh" ]
+ "leaf03" [function="leaf" os="CumulusCommunity/cumulus-vx" version="3.5.3" memory="768" config="./helper_scripts/config_switch.sh" ]
+ "spine01" [function="spine" os="CumulusCommunity/cumulus-vx" version="3.5.3" memory="768" config="./helper_scripts/config_switch.sh" ]
+ "spine02" [function="spine" os="CumulusCommunity/cumulus-vx" version="3.5.3" memory="768" config="./helper_scripts/config_switch.sh" ]
+ "server01" [function="host" os="yk0/ubuntu-xenial" memory="512" config="./helper_scripts/config_server.sh" ]
+ "server03" [function="host" os="yk0/ubuntu-xenial" memory="512" config="./helper_scripts/config_server.sh" ]
+ "oob-mgmt-switch" [function="oob-switch" vagrant="eth0" os="CumulusCommunity/cumulus-vx" version="3.5.3" memory="768" config="./helper_scripts/config_oob_switch.sh" ]
+ "oob-mgmt-server" [function="oob-server" vagrant="eth0" os="CumulusCommunity/vx_oob_server" version="1.0.4" memory="1024" config="./helper_scripts/config_oob_server.sh" ]
+
+ "leaf01":"swp51" -- "spine01":"swp1"
+ "leaf02":"swp51" -- "spine01":"swp2"
+ "leaf03":"swp51" -- "spine01":"swp3"
+ "leaf01":"swp52" -- "spine02":"swp1"
+ "leaf02":"swp52" -- "spine02":"swp2"
+ "leaf03":"swp52" -- "spine02":"swp3"
+
+ "leaf01":"swp49" -- "leaf02":"swp49"
+ "leaf01":"swp50" -- "leaf02":"swp50"
+
+ "server01":"eth1" -- "leaf01":"swp1" [left_mac="00:03:00:11:11:01"]
+ "server01":"eth2" -- "leaf02":"swp1" [left_mac="00:03:00:11:11:02"]
+ "server03":"eth1" -- "leaf03":"swp1" [left_mac="00:03:00:33:33:01"]
+
+ "oob-mgmt-server":"eth1" -- "oob-mgmt-switch":"swp1" [right_mac="a0:00:00:00:00:61"]
+ "server01":"eth0" -- "oob-mgmt-switch":"swp2" [left_mac="a0:00:00:00:00:31"]
+ "server03":"eth0" -- "oob-mgmt-switch":"swp4" [left_mac="a0:00:00:00:00:33"]
+ "leaf01":"eth0" -- "oob-mgmt-switch":"swp6" [left_mac="a0:00:00:00:00:11"]
+ "leaf02":"eth0" -- "oob-mgmt-switch":"swp7" [left_mac="a0:00:00:00:00:12"]
+ "leaf03":"eth0" -- "oob-mgmt-switch":"swp8" [left_mac="a0:00:00:00:00:13"]
+ "spine01":"eth0" -- "oob-mgmt-switch":"swp10" [left_mac="a0:00:00:00:00:21"]
+ "spine02":"eth0" -- "oob-mgmt-switch":"swp11" [left_mac="a0:00:00:00:00:22"]
+}
