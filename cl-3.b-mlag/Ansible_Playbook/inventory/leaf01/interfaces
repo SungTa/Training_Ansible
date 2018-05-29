@@ -1,0 +1,73 @@
+auto lo
+iface lo inet loopback
+    address 23.0.0.11/32
+
+auto eth0
+iface eth0 inet dhcp
+
+# uplinks
+
+# peerlink
+auto swp49
+iface swp49
+   post-up ip link set $IFACE promisc on     # Only required on VX
+
+auto swp50
+iface swp50
+   post-up ip link set $IFACE promisc on     # Only required on VX
+
+auto peerlink
+iface peerlink
+    bond-slaves swp49 swp50
+
+auto peerlink.4094
+iface peerlink.4094
+    address 169.254.255.1
+    netmask 255.255.255.0
+    clagd-priority 4096
+    clagd-peer-ip 169.254.255.2
+    clagd-backup-ip 10.0.0.11
+    clagd-sys-mac 44:38:39:ff:00:01
+
+# bridge to hosts
+auto swp1
+iface swp1
+  link-autoneg off
+  link-speed 10000
+
+auto swp2
+iface swp2
+  link-autoneg off
+  link-speed 10000
+
+# bridge to hosts
+auto bridge
+iface bridge
+    bridge-ports peerlink server1 server2
+    bridge-vids 1013
+    bridge-vlan-aware yes
+
+auto server1
+iface server1
+    bond-slaves swp1
+    bridge-access 1013
+    clag-id 1
+    mstpctl-bpduguard yes
+    mstpctl-portadminedge yes
+ 
+ 
+auto server2
+iface server2
+    bond-slaves swp2
+    bridge-access 1013
+    clag-id 2
+    mstpctl-bpduguard yes
+    mstpctl-portadminedge yes
+  
+auto vlan1013
+iface vlan1013
+    address 172.16.1.1/24
+    vlan-id 1013
+    vlan-raw-device bridge
+
+

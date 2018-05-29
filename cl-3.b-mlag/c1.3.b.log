@@ -1,0 +1,160 @@
+cumulus@oob-mgmt-server:~/ansible/CumulusLinux/2-Switch_Scenario-1-2_MLAG-CUMULUS - Anyspeed/Ansible_Playbook$ ansible-playbook deploy_mlag_2SW.yml
+[DEPRECATION WARNING]: [defaults]hostfile option, The key is misleading as it can also be a list of hosts, a directory or a list of paths . This feature will be removed in version 2.8. Deprecation warnings can be disabled by setting
+deprecation_warnings=False in ansible.cfg.
+
+PLAY [network] ******************************************************************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] **********************************************************************************************************************************************************************************************************************
+ok: [leaf01]
+ok: [leaf02]
+
+TASK [copy interfaces] **********************************************************************************************************************************************************************************************************************
+ok: [leaf02]
+ok: [leaf01]
+
+TASK [copy frr daemons] *********************************************************************************************************************************************************************************************************************
+ok: [leaf02]
+ok: [leaf01]
+
+TASK [copy frr conf] ************************************************************************************************************************************************************************************************************************
+ok: [leaf01]
+ok: [leaf02]
+
+TASK [reload networking] ********************************************************************************************************************************************************************************************************************
+changed: [leaf01]
+changed: [leaf02]
+
+TASK [reload frr] ***************************************************************************************************************************************************************************************************************************
+changed: [leaf01]
+changed: [leaf02]
+
+PLAY [server] *******************************************************************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] **********************************************************************************************************************************************************************************************************************
+ok: [server02]
+ok: [server01]
+
+TASK [install ifenslave package] ************************************************************************************************************************************************************************************************************
+ok: [server01] => (item=[u'ifenslave-2.6'])
+changed: [server02] => (item=[u'ifenslave-2.6'])
+
+TASK [Setup bonding module in Kernel] *******************************************************************************************************************************************************************************************************
+changed: [server01]
+changed: [server02]
+
+TASK [copy interfaces] **********************************************************************************************************************************************************************************************************************
+ok: [server01]
+changed: [server02]
+
+TASK [restarts servers with their new configuration] ****************************************************************************************************************************************************************************************
+changed: [server01]
+changed: [server02]
+
+TASK [Wait for everything to come back up] **************************************************************************************************************************************************************************************************
+ok: [server01 -> localhost]
+ok: [server02 -> localhost]
+
+PLAY RECAP **********************************************************************************************************************************************************************************************************************************
+leaf01                     : ok=6    changed=2    unreachable=0    failed=0
+leaf02                     : ok=6    changed=2    unreachable=0    failed=0
+server01                   : ok=6    changed=2    unreachable=0    failed=0
+server02                   : ok=6    changed=4    unreachable=0    failed=0
+
+cumulus@oob-mgmt-server:~/ansible/CumulusLinux/2-Switch_Scenario-1-2_MLAG-CUMULUS - Anyspeed/Ansible_Playbook$ ssh le
+leaf01  leaf02  leaf03  leaf04
+cumulus@oob-mgmt-server:~/ansible/CumulusLinux/2-Switch_Scenario-1-2_MLAG-CUMULUS - Anyspeed/Ansible_Playbook$ ssh leaf01
+
+Welcome to Cumulus VX (TM)
+
+Cumulus VX (TM) is a community supported virtual appliance designed for
+experiencing, testing and prototyping Cumulus Networks' latest technology.
+For any questions or technical support, visit our community site at:
+http://community.cumulusnetworks.com
+
+The registered trademark Linux (R) is used pursuant to a sublicense from LMI,
+the exclusive licensee of Linus Torvalds, owner of the mark on a world-wide
+basis.
+cumulus@leaf01:~$ net show interface
+       Name           Master    Speed    MTU    Mode           Remote Host      Remote Port    Summary
+-----  -------------  --------  -------  -----  -------------  ---------------  -------------  --------------------------------------
+UP     lo                       N/A      65536  Loopback                                       IP: 127.0.0.1/8, 23.0.0.11/32, ::1/128
+UP     eth0                     1G       1500   Mgmt           oob-mgmt-switch  swp6           IP: 192.168.0.11/24(DHCP)
+ADMDN  eth12                    N/A      1500   Mgmt
+ADMDN  eth13                    N/A      1500   Mgmt
+ADMDN  eth14                    N/A      1500   Mgmt
+ADMDN  eth15                    N/A      1500   Mgmt
+ADMDN  eth16                    N/A      1500   Mgmt
+ADMDN  eth17                    N/A      1500   Mgmt
+ADMDN  eth18                    N/A      1500   Mgmt
+ADMDN  eth19                    N/A      1500   Mgmt
+ADMDN  eth20                    N/A      1500   Mgmt
+ADMDN  eth21                    N/A      1500   Mgmt
+ADMDN  eth22                    N/A      1500   Mgmt
+ADMDN  eth23                    N/A      1500   Mgmt
+ADMDN  eth24                    N/A      1500   Mgmt
+ADMDN  eth25                    N/A      1500   Mgmt
+ADMDN  eth26                    N/A      1500   Mgmt
+ADMDN  eth27                    N/A      1500   Mgmt
+ADMDN  eth28                    N/A      1500   Mgmt
+ADMDN  eth29                    N/A      1500   Mgmt
+ADMDN  eth30                    N/A      1500   Mgmt
+ADMDN  eth31                    N/A      1500   Mgmt
+ADMDN  eth32                    N/A      1500   Mgmt
+ADMDN  eth33                    N/A      1500   Mgmt
+ADMDN  eth34                    N/A      1500   Mgmt
+ADMDN  eth35                    N/A      1500   Mgmt
+UP     swp1           server1   10G      1500   BondMember     server01         eth1           Master: server1(UP)
+UP     swp2           server2   10G      1500   BondMember     server02         eth1           Master: server2(UP)
+ADMDN  swp45                    N/A      1500   NotConfigured
+ADMDN  swp46                    N/A      1500   NotConfigured
+ADMDN  swp47                    N/A      1500   NotConfigured
+ADMDN  swp48                    N/A      1500   NotConfigured
+UP     swp49          peerlink  1G       1500   BondMember     leaf02           swp49          Master: peerlink(UP)
+UP     swp50          peerlink  1G       1500   BondMember     leaf02           swp50          Master: peerlink(UP)
+ADMDN  swp51                    N/A      1500   NotConfigured
+ADMDN  swp52                    N/A      1500   NotConfigured
+UP     bridge                   N/A      1500   Bridge/L2
+UP     peerlink       bridge    2G       1500   LACP                                           Bond Members: swp49(UP), swp50(UP)
+UP     peerlink.4094            2G       1500   SubInt/L3                                      IP: 169.254.255.1/24
+UP     server1        bridge    100G     1500   LACP                                           Bond Members: swp1(UP)
+UP     server2        bridge    100G     1500   LACP                                           Bond Members: swp2(UP)
+ADMDN  vagrant                  N/A      1500   NotConfigured
+UP     vlan1013                 N/A      1500   Interface/L3                                   IP: 172.16.1.1/24
+
+cumulus@leaf01:~$ exit
+logout
+Connection to leaf01 closed.
+cumulus@oob-mgmt-server:~/ansible/CumulusLinux/2-Switch_Scenario-1-2_MLAG-CUMULUS - Anyspeed/Ansible_Playbook$ ssh se
+server01  server02  server03  server04
+cumulus@oob-mgmt-server:~/ansible/CumulusLinux/2-Switch_Scenario-1-2_MLAG-CUMULUS - Anyspeed/Ansible_Playbook$ ssh server01
+Welcome to Ubuntu 16.04 LTS (GNU/Linux 4.4.0-22-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+
+249 packages can be updated.
+133 updates are security updates.
+
+
+Last login: Sat May 26 16:00:33 2018 from 192.168.0.254
+cumulus@server01:~$ ifconfig uplink
+uplink    Link encap:Ethernet  HWaddr 00:03:00:11:11:02
+          inet addr:172.16.1.101  Bcast:172.16.1.255  Mask:255.255.255.0
+          inet6 addr: fe80::203:ff:fe11:1102/64 Scope:Link
+          UP BROADCAST RUNNING MASTER MULTICAST  MTU:1500  Metric:1
+          RX packets:111 errors:0 dropped:6 overruns:0 frame:0
+          TX packets:100 errors:0 dropped:2 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:12446 (12.4 KB)  TX bytes:13024 (13.0 KB)
+
+cumulus@server01:~$ ping 172.16.1.102
+PING 172.16.1.102 (172.16.1.102) 56(84) bytes of data.
+64 bytes from 172.16.1.102: icmp_seq=1 ttl=64 time=2.66 ms
+64 bytes from 172.16.1.102: icmp_seq=2 ttl=64 time=1.49 ms
+^C
+--- 172.16.1.102 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 1.490/2.078/2.666/0.588 ms
+cumulus@server01:~$ exit
+logout
+Connection to server01 closed.
+
